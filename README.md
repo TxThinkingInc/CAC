@@ -8,7 +8,7 @@ A configuration file format that is the same as command-line arguments.
 
 1. Write all the arguments into a file, and then run the command with the filename. The effect will be the same
 2. Supports multiple arguments on separate lines
-3. Supports line comments starting with `#`
+3. Supports line comments starting with `#` and ignore empty line
 
 ## Example
 
