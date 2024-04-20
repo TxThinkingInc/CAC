@@ -33,9 +33,9 @@ func mergeLine(list []string) (mergedList []string) {
 			var needMergeCount int
 			for j := i + 1; j < length; j++ {
 				if !endWithValidBackslash(list[j]) {
-					needMergeCount = j - i
 					break
 				}
+				needMergeCount++
 			}
 			mergedList = append(mergedList, list[i:i+needMergeCount]...)
 			i += needMergeCount
