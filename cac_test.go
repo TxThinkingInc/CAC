@@ -1,6 +1,7 @@
 package cac
 
 import (
+	"slices"
 	"strings"
 	"testing"
 )
@@ -28,7 +29,7 @@ Thursday
 Fri\
 day`,
 			pass: func(list []string) bool {
-				return len(list) == 4
+				return slices.Compare(list, []string{"Monday", "Tuesday", "Thursday", "Friday"}) == 0
 			},
 		},
 		{
@@ -39,7 +40,7 @@ frog
 # beacuse it taste like chicken.
 chicken`,
 			pass: func(list []string) bool {
-				return len(list) == 2
+				return slices.Compare(list, []string{"frog", "chicken"}) == 0
 			},
 		},
 		{
@@ -52,7 +53,7 @@ chicken`,
 
 			lsll`,
 			pass: func(list []string) bool {
-				return len(list) == 4
+				return slices.Compare(list, []string{"fun", "today", "right", "lsll"}) == 0
 			},
 		},
 	}

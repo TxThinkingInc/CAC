@@ -9,18 +9,20 @@ func Parse(fileContent string) []string {
 	list := strings.Split(fileContent, "\n")
 
 	// Remove commands
-	var listWihoutCommands []string
+	var listWithoutCommands []string
 	for i := range list {
-		trimedSpace := strings.TrimSpace(list[i])
-		if strings.HasPrefix(trimedSpace, "#") {
+		trimmedSpace := strings.TrimSpace(list[i])
+		markerIndex := strings.Index(trimmedSpace, "#")
+		if markerIndex >= 0 {
+			trimmedSpace = trimmedSpace[:markerIndex]
+		}
+		if trimmedSpace == "" {
 			continue
 		}
-		listWihoutCommands = append(listWihoutCommands, trimedSpace)
+		listWithoutCommands = append(listWithoutCommands, trimmedSpace)
 	}
-	clear(list)
-	list = nil
 
-	pureList := strings.Fields(strings.Join(listWihoutCommands, " "))
+	pureList := strings.Fields(strings.Join(listWithoutCommands, " "))
 
 	return mergeLine(pureList)
 }
