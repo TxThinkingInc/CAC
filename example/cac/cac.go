@@ -9,31 +9,41 @@ import (
 	"github.com/txthinkinginc/cac"
 )
 
+var (
+	commandLine = flag.NewFlagSet("cac", flag.ExitOnError)
+
+	showVersion bool
+	foo         string
+)
+
 func init() {
-	if len(os.Args) == 2 {
-		switch os.Args[1] {
-		case "-h", "--help", "help":
-			defer func() {
-				flag.Usage()
-				os.Exit(0)
-			}()
-			goto stdflag
-		}
-
-		fileContent, err := os.ReadFile(os.Args[1])
-		if err != nil {
-			log.Fatalln(err)
-			return
-		}
-
-		flag.CommandLine.Parse(cac.Parse(string(fileContent)))
-		return
-	}
-
-stdflag:
-	flag.Parse()
+	commandLine.BoolVar(&showVersion, "v", false, "Show version")
+	commandLine.StringVar(&foo, "foo", "", "Some argument")
 }
 
 func main() {
-	fmt.Println(flag.Args())
+	var args []string
+	if len(os.Args) == 2 {
+		switch os.Args[1] {
+		case "-h", "--help", "help":
+			commandLine.Usage()
+			return
+		default:
+			fileContent, err := os.ReadFile(os.Args[1])
+			if err != nil {
+				args = os.Args[1:]
+			} else {
+				args = cac.Parse(string(fileContent))
+			}
+		}
+	}
+
+	err := commandLine.Parse(args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(commandLine.Args())
+	fmt.Println("showVersion: ", showVersion)
+	fmt.Println("foo: ", foo)
 }

@@ -1,5 +1,7 @@
+-v # Show version
+-foo bar
+# Go flag will stop parsing when command starts without `-`
 command1 command2
 command3
-
 # ???
 command4
