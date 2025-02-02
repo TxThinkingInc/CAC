@@ -1,6 +1,7 @@
 package cac
 
 import (
+	"slices"
 	"strings"
 )
 
@@ -29,37 +30,30 @@ func Parse(fileContent string) []string {
 
 // mergeLine merges near line if the first line ends with backslash.
 func mergeLine(list []string) (mergedList []string) {
-	length := len(list)
-	for i := 0; i < length; i++ {
-		if endWithValidBackslash(list[i]) {
-			var needMergeCount int
-			for j := i + 1; j < length; j++ {
-				if !endWithValidBackslash(list[j]) {
-					break
-				}
-				needMergeCount++
-			}
-			mergedList = append(mergedList, list[i:i+needMergeCount]...)
-			i += needMergeCount
-			continue
+	var currentMergedLineParts []string
+	for _, item := range list {
+		if endWithValidBackslash(item) {
+			currentMergedLineParts = append(currentMergedLineParts, strings.TrimSuffix(item, "\\"))
+		} else {
+			currentMergedLineParts = append(currentMergedLineParts, item)
+			mergedList = append(mergedList, strings.Join(currentMergedLineParts, ""))
+			currentMergedLineParts = nil // Reset for next merged line
 		}
-		mergedList = append(mergedList, list[i])
 	}
-
-	return
+	return mergedList
 }
 
-// endWithValidBackslash used to check wheaher the suffix is valid backslash.
+// endWithValidBackslash checks whether the suffix is valid backslash.
 func endWithValidBackslash(str string) bool {
-	list := strings.Split(str, "")
-	length := len(list)
-	if length == 0 {
+	list := strings.Split(str, "") // Can handle different encoding.
+	if len(list) == 0 {
 		return false
 	}
 
+	slices.Reverse(list)
 	var backslashCount int
-	for i := length - 1; i >= 0; i-- {
-		if list[i] != "\\" {
+	for _, word := range list {
+		if word != "\\" {
 			break
 		}
 		backslashCount++
